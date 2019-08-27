@@ -1,0 +1,33 @@
+﻿@model eFruitWorld.Models.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+}
+<h2 align="center">@ViewBag.Title</h2>
+<div class="text-center">
+    @using (Html.BeginForm("Login", "Login"))
+    {
+        @Html.LabelFor(model => model.Username, "Username");
+        <br />
+        @Html.TextBoxFor(model => model.Username);
+        <br />
+        @Html.ValidationMessageFor(model => model.Username);
+        <br />
+        @Html.LabelFor(model => model.Password, "Password");
+        <br />
+        @Html.PasswordFor(model => model.Password);
+        <br />
+        @Html.ValidationMessageFor(model => model.Password);
+        <br />
+        <button type="submit" value="Login">Login</button>
+        <input type="button" value="Register as a User" onclick="location.href='@Url.Action("Register")'" />
+    }
+</div>
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}

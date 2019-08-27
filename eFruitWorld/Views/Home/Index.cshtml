@@ -1,0 +1,55 @@
+﻿@model eFruitWorld.Models.CartModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<table style="padding: 10px">
+    <tr>
+        <td style="padding: 100px">
+            <img src="~/img/Banana.jpg" alt="Banana" style="width:100px;height:100px;">
+            <form action="@Url.Action("AddToCart", new { fruitType = "banana" })" method="POST">
+                <input type="button" value="Add a Banana" onclick="form.submit()" />
+            </form>
+        </td>
+        <td style="padding: 100px">
+            <img src="~/img/Apple.jpg" alt="Apple" style="width:100px;height:100px;">
+            <form action="@Url.Action("AddToCart", new { fruitType = "apple" })" method="POST">
+                <input type="button" value="Add an Apple" onclick="form.submit()" />
+            </form>
+        </td>
+        <td style="padding: 100px">
+            <img src="~/img/orange.jpg" alt="Orange" style="width:100px;height:100px;">
+            <form action="@Url.Action("AddToCart", new { fruitType = "orange" })" method="POST">
+                <input type="button" value="Add an Orange" onclick="form.submit()" />
+            </form>
+        </td>
+    </tr>
+</table>
+
+
+<script type="text/javascript">
+    function remove_fruit(clicked_id) {
+        alert("Are You sure you want to remove " + clicked_id)
+        $.ajax({
+            url: '/Home/RemoveFromCart',
+            type: "post",
+            data: { fruitType: clicked_id }
+        }).done(function () {
+            alert('Removed');
+            location.reload();
+
+        });
+
+    }
+</script>
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+    </script>
+}

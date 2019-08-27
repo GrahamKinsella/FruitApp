@@ -1,0 +1,64 @@
+﻿@model eFruitWorld.Models.OrderSummaryModel
+
+@{
+    ViewBag.Title = "Order Summaries";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Order Summary</title>
+</head>
+<body>
+    @if (Session["Username"] != null)
+    {
+        <h1 align="center">Order Summary for User - @Session["Username"].ToString()</h1>
+        <div>
+            @if (Model != null && Model.Orders != null)
+            {
+                foreach (var o in Model.Orders)
+                {
+                    <table style="width:50%" border="1" align="center">
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>Country</th>
+                            <th>Total Cost</th>
+                            <th>Total Weight</th>
+
+                        </tr>
+                        <tr>
+                            <td>@o.Name</td>
+                            <td>@o.Address</td>
+                            <td>@o.City</td>
+                            <td>@o.Country</td>
+                            <td>€@o.TotalCost</td>
+                            <td>@o.TotalWeight KG</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Subtotal Weight</th>
+                            <th>Subtotal Cost</th>
+                        </tr>
+                        @foreach (var f in o.Fruits)
+                        {
+                            <tr>
+                                <td>@f.FruitType</td>
+                                <td>@f.Amount</td>
+                                <td>@f.Weight KG</td>
+                                <td>€@f.Price</td>
+                            </tr>
+                        }
+                    </table>
+                    <br />
+                }
+            }
+        </div>
+    }
+</body>
+</html>

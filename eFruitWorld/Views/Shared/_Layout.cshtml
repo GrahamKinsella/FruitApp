@@ -1,0 +1,124 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - efruitWorld</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @if (Session["Username"] != null)
+                {
+                    @Html.ActionLink("eFruitWorld", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                }
+            </div>
+            @if (Session["Username"] != null)
+            {
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Shop", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Order Summaries", "GetOrders", "OrderSummary")</li>
+                        @if (Model != null)
+                        {
+                            if (Model.Cart != null)
+                            {
+                                <li><button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModal" style="display: block; padding: 15px">View Cart</button></li>
+                            }
+                        }
+                        <li>@Html.ActionLink("Log Out", "Logout", "Login")</li>
+                        <li style="display: block; padding: 15px">
+                        </li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <table style="width:100%" border="1">
+                    <tr>
+
+                        <th>Fruit</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                        <th>Weight</th>
+                        <th>Remove Fruit</th>
+                    </tr>
+                    @if (Model != null && Model.Cart != null)
+                    {
+                        foreach (var a in Model.Cart)
+                        {
+                    <tr>
+                        <td>@a.FruitType</td>
+                        <td>@a.Amount</td>
+                        <td>@a.Price</td>
+                        <td>@a.Weight</td>
+                        <td>
+                            <input type="button" id="@a.FruitType" value="Remove @a.FruitType" onclick="remove_fruit(this.id)" />
+                        </td>
+                    </tr>
+                        }
+                    }
+                </table>
+                <br />
+                @if (Model != null)
+                {
+                    if (Model.Cart != null)
+                    {
+                        if (Model.Cart.Count != 0)
+                        {
+                            <input type="button" value="Clear Cart" onclick="location.href='@Url.Action("ClearCart", "Home")'" />
+                            <input type="button" value="Checkout" onclick="location.href='@Url.Action("Checkout", "Checkout")'" />
+                        }
+                    }
+                }
+                else
+                {
+                    <input type="button" value="Clear Cart" onclick="location.href='@Url.Action("ClearCart", "Home")'" disabled />
+                    <input type="button" value="Checkout" onclick="location.href='@Url.Action("Checkout", "Checkout")'" disabled />
+                }
+            </div>
+        </div>
+    </div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        function remove_fruit(clicked_id) {
+            alert("Are You sure you want to remove " + clicked_id)
+            $.ajax({
+                url: '/Home/RemoveFromCart',
+                type: "post",
+                data: { fruitType: clicked_id }
+            }).done(function () {
+                alert('Removed');
+                location.reload();
+
+            });
+
+        }
+    </script>
+</body>
+</html>
