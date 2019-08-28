@@ -32,11 +32,11 @@ namespace eFruitWorld.Controllers
         {
             var weight = Convert.ToDouble(Session["weight"]);
             var fruit = GetFruit(fruitType);
-            weight = Add(weight, fruit);
+            Add(weight, fruit);
             return RedirectToAction("Index");
         }
 
-        private double Add(double weight, Fruit fruit)
+        private void Add(double weight, Fruit fruit)
         {
             if (Session["cart"] == null)
             {
@@ -83,8 +83,6 @@ namespace eFruitWorld.Controllers
 
                 Session["cart"] = Model.Cart;
             }
-
-            return weight;
         }
 
         [ValidateInput(false)]
