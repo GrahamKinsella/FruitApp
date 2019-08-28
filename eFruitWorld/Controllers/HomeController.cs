@@ -30,22 +30,14 @@ namespace eFruitWorld.Controllers
         [HttpPost]
         public ActionResult AddToCart(string fruitType)
         {
-            Fruit fruit = null;
             var weight = Convert.ToDouble(Session["weight"]);
-            switch (fruitType.ToLower())
-            {
-                case "banana":
-                    fruit = Model.GetBanana();
-                    break;
-                case "apple":
-                    fruit = Model.GetApple();
-                    break;
-                case "orange":
-                    fruit = Model.GetOrange();
-                    break;
-            }
- 
-            //check if the session object exists and create if not
+            var fruit = GetFruit(fruitType);
+            weight = Add(weight, fruit);
+            return RedirectToAction("Index");
+        }
+
+        private double Add(double weight, Fruit fruit)
+        {
             if (Session["cart"] == null)
             {
                 Model.Cart.Add(fruit);
@@ -54,11 +46,11 @@ namespace eFruitWorld.Controllers
                 Session["weight"] = weight;
             }
 
-            //exists so get it and increase amount if its not over limit of 3kg
             else
             {
                 Model.Cart = (List<Fruit>)Session["cart"];
                 int i = GetFruitIndex(fruit.FruitType);
+
                 if (i != -1)
                 {
                     if (weight + fruit.Weight <= 3.0)
@@ -75,7 +67,6 @@ namespace eFruitWorld.Controllers
                     }
                 }
 
-                //if the list has been initialised in session but fruit hasnt been added yet
                 else
                 {
                     if (weight + fruit.Weight <= 3.0)
@@ -92,29 +83,26 @@ namespace eFruitWorld.Controllers
 
                 Session["cart"] = Model.Cart;
             }
-            return RedirectToAction("Index");
+
+            return weight;
         }
 
         [ValidateInput(false)]
         [HttpPost]
         public ActionResult RemoveFromCart(string fruitType)
         {
-            Fruit fruit = null;
             var weight = Convert.ToDouble(Session["weight"]);
-            switch (fruitType.ToLower())
-            {
-                case "banana":
-                    fruit = Model.GetBanana();
-                    break;
-                case "apple":
-                    fruit = Model.GetApple();
-                    break;
-                case "orange":
-                    fruit = Model.GetOrange();
-                    break;
-            }
+            var fruit = GetFruit(fruitType);
+            Remove(weight, fruit);
+
+            return RedirectToAction("Index");
+        }
+
+        private void Remove(double weight, Fruit fruit)
+        {
             Model.Cart = (List<Fruit>)Session["cart"];
             int i = GetFruitIndex(fruit.FruitType);
+
             if (i >= 0 && Model.Cart[i].Amount != 0)
             {
                 Model.Cart[i].Amount--;
@@ -124,16 +112,11 @@ namespace eFruitWorld.Controllers
                 Model.Cart[i].Weight = Model.Cart[i].Weight - fruit.Weight;
                 Session["weight"] = weight;
             }
-            if(Model.Cart[i].Amount == 0)
+
+            if (Model.Cart[i].Amount == 0)
             {
                 Model.Cart.RemoveAt(i);
             }
-            else
-            {
-                //handle this better
-            }
-
-            return RedirectToAction("Index");
         }
 
         private int GetFruitIndex(string fruitType)
@@ -159,6 +142,25 @@ namespace eFruitWorld.Controllers
         public ActionResult Checkout()
         {
             return View("Checkout");
+        }
+
+        private Fruit GetFruit(string fruitType)
+        {
+            Fruit fruit = null;
+            switch (fruitType.ToLower())
+            {
+                case "banana":
+                    fruit = Model.GetBanana();
+                    break;
+                case "apple":
+                    fruit = Model.GetApple();
+                    break;
+                case "orange":
+                    fruit = Model.GetOrange();
+                    break;
+            }
+            return fruit;
+
         }
     }
 }

@@ -21,6 +21,11 @@ namespace eFruitWorld.Controllers
         [ValidateInput(false)]
         public ActionResult Login(LoginModel Model)
         {
+            return CreateUser(Model);
+        }
+
+        private ActionResult CreateUser(LoginModel Model)
+        {
             User user = new User
             {
                 Username = Model.Username,
@@ -41,13 +46,54 @@ namespace eFruitWorld.Controllers
                     else
                     {
                         ViewBag.Message = "User does not exist or Password is incorrect";
+                        return View("Login");
                     }
                 }
             }
-
-            return View("Login");
+            else
+            {
+                return View("Login");
+            }
         }
 
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Register(LoginModel Model)
+        {
+            if (ModelState.IsValid)
+            {
+                return RegisterUser(Model);
+            }
+            else
+            {
+                return View("Register");
+            }
+        }
+
+        private ActionResult RegisterUser(LoginModel Model)
+        {
+            using (var db = new CartContext())
+            {
+                var res = db.User.Where(u => u.Username == Model.Username).Select(a => a).ToList();
+                if (res.Count == 0)
+                {
+                    var User = new User()
+                    {
+                        Username = Model.Username,
+                        Password = Model.Password,
+                    };
+                    var order = db.User.Add(User);
+                    db.SaveChanges();
+                    ViewBag.Message = "User Registered Successfully";
+                    return View("Login");
+                }
+                else
+                {
+                    ViewBag.Message = "User Already Registered";
+                    return View("Login");
+                }
+            }
+        }
 
         public ActionResult Register()
         {
@@ -59,39 +105,6 @@ namespace eFruitWorld.Controllers
         {
             Session.Clear();
             return RedirectToAction("Index");
-        }
-
-
-
-        [HttpPost]
-        [ValidateInput(false)]
-        public ActionResult Register(LoginModel Model)
-        {
-            if (ModelState.IsValid)
-            {
-                using (var db = new CartContext())
-                {
-                    var res = db.User.Where(u => u.Username == Model.Username).Select(a => a).ToList();
-                    if (res.Count == 0)
-                    {
-                        var User = new User()
-                        {
-                            Username = Model.Username,
-                            Password = Model.Password,
-                        };
-                        var order = db.User.Add(User);
-                        db.SaveChanges();
-                        ViewBag.Message = "User Registered Successfully";
-                        return View("Login");
-                    }
-                    else
-                    {
-                        ViewBag.Message = "User Already Registered";
-                        return View("Login");
-                    }
-                }
-            }
-            return View("Register");
         }
     }
 }

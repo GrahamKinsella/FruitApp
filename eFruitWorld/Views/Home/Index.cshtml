@@ -28,23 +28,6 @@
     </tr>
 </table>
 
-
-<script type="text/javascript">
-    function remove_fruit(clicked_id) {
-        alert("Are You sure you want to remove " + clicked_id)
-        $.ajax({
-            url: '/Home/RemoveFromCart',
-            type: "post",
-            data: { fruitType: clicked_id }
-        }).done(function () {
-            alert('Removed');
-            location.reload();
-
-        });
-
-    }
-</script>
-
 @if (ViewBag.Message != null)
 {
     <script type="text/javascript">

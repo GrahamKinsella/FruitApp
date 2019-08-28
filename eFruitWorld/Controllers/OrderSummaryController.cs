@@ -20,6 +20,11 @@ namespace eFruitWorld.Controllers
         public ActionResult GetOrders()
         {
             OrderSummaryModel Model = new OrderSummaryModel();
+            return PopulateOrders(Model);
+        }
+
+        private ActionResult PopulateOrders(OrderSummaryModel Model)
+        {
             using (var db = new CartContext())
             {
                 Model.Cart = (List<Fruit>)Session["cart"];
@@ -59,10 +64,8 @@ namespace eFruitWorld.Controllers
             }
         }
 
-
         private int CheckList(Fruit fruit, OrderSummaryModel Model)
         {
-
             if (Model.Orders != null)
             {
                 for (int i = 0; i < Model.Orders.Count; i++)

@@ -22,8 +22,8 @@ namespace eFruitWorld.Models
             Fruit fruit = new Fruit
             {
                 FruitType = "Banana",
-                Price = .25,
-                Weight = .35,
+                Price = .35,
+                Weight = .25,
                 Amount = 1
             };
 
